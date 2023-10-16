@@ -12,12 +12,12 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body() description: string): Promise<Task> {
-    return this.tasksService.create(description);
+  createTask(@Body() description: any): Promise<Task> {
+    return this.tasksService.create(description.description);
   }
 
   @Post('delete/:id')
-  deleteTask(@Param('id') id: number): Promise<Task> {
+  deleteTask(@Param('id') id: any): Promise<Task> {
     return this.tasksService.delete(id);
   }
 
@@ -27,5 +27,10 @@ export class TasksController {
     @Body() description: string,
   ): Promise<Task> {
     return this.tasksService.update(id, description);
+  }
+
+  @Post('complete/:id')
+  completeTask(@Param('id') id: number): Promise<Task> {
+    return this.tasksService.complete(id);
   }
 }

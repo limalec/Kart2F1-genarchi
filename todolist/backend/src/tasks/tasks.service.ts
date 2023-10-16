@@ -8,7 +8,7 @@ export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
   async create(description: string): Promise<Task> {
-    const createdTask = new this.taskModel(description);
+    const createdTask = new this.taskModel({description, id: Math.floor(Math.random() * 100000)});
     return createdTask.save();
   }
 
@@ -20,6 +20,12 @@ export class TasksService {
     const task = await this.taskModel.findById(id);
     const updatedTask = Object.assign(task, description);
     return updatedTask.save();
+  }
+
+  async complete(id: number): Promise<Task> {
+    const task = await this.taskModel.findById(id);
+    task.isComplete = true;
+    return task.save();
   }
 
   async findAll(): Promise<Task[]> {
