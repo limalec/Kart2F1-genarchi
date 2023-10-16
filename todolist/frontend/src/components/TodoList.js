@@ -9,7 +9,6 @@ function TodoList() {
     useEffect(() => {
         async function fetchData() {
             const storageTodos = await getStorageTodos();
-            console.log(storageTodos);
 
             if (storageTodos) {
                 setTodos(storageTodos)
@@ -23,7 +22,7 @@ function TodoList() {
             return
         }
 
-        createStorageTodo({
+        await createStorageTodo({
             description: todo.description
         });
 
@@ -35,21 +34,20 @@ function TodoList() {
         if (!newValue.description || /^\s*$/.test(newValue.description)) {
             return
         }
-        updateStorageTodo(todoId, newValue)
+        await updateStorageTodo(todoId, newValue)
         const storageTodos = await getStorageTodos();
         setTodos(storageTodos);
     }
 
     const removeTodo = async id => {
-        console.log(id);
-        deleteStorageTodo(id);
+        await deleteStorageTodo(id);
 
         const storageTodos = await getStorageTodos();
         setTodos(storageTodos);
     };
 
     const completeTodo = async id => {
-        completeStorageTodo(id);
+        await completeStorageTodo(id);
         const storageTodos = await getStorageTodos();
         setTodos(storageTodos);
     };

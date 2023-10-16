@@ -8,7 +8,10 @@ export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
   async create(description: string): Promise<Task> {
-    const createdTask = new this.taskModel({description, id: Math.floor(Math.random() * 100000)});
+    const createdTask = new this.taskModel({
+      description,
+      id: Math.floor(Math.random() * 100000),
+    });
     return createdTask.save();
   }
 
