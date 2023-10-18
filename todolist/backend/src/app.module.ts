@@ -3,6 +3,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TasksModule } from './tasks/tasks.module.js';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://127.0.0.1:27017/'), TasksModule],
+  imports: [MongooseModule.forRoot(process.env.DATABASE_HOST), TasksModule],
 })
 export class AppModule {}
