@@ -4,10 +4,7 @@ import { TasksModule } from './tasks/tasks.module.js';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.DATABASE_HOST, {
-      pass: 'ZBW5lDSSY1HNz4EP',
-      user: 'kart2f1genarchi',
-    }),
+    MongooseModule.forRoot("mongodb://34.163.103.223:27017,34.155.182.202:27017,34.155.183.101:27017/db-test?replicaSet=rs0"),
     TasksModule,
   ],
 })
