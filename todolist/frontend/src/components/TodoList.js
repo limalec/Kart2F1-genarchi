@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import TodoForm from './TodoForm';
 import Todo from './Todo';
-import { completeStorageTodo, createStorageTodo, deleteStorageTodo, getStorageTodos, updateStorageTodo } from '../api';
+import { completeStorageTodo, createStorageTodo, deleteStorageTodo, getStorageTodos, refreshStorageTodos, updateStorageTodo } from '../api';
+
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 function TodoList() {
+    const [isConnected, setIsConnected] = useState(socket.connected);
     const [todos, setTodos] = useState([]);
     const LOCAL_STORAGE_KEY = "react-do-list-todos";
     
     useEffect(() => {
+        socket.on("connect", () => {
+            console.log("connected");
+            setIsConnected(true);
+        });
+        socket.on("disconnect", () => {
+            console.log("disconnected");
+            setIsConnected(false);
+        });
+
+
         async function fetchData() {
             const storageTodos = await getStorageTodos();
             console.log(storageTodos)
@@ -17,7 +32,9 @@ function TodoList() {
             }
         }
         try {
-            fetchData();
+            if (isConnected){
+                fetchData();
+            }
         } catch (e) {
             console.log(e);
             const storageTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -26,7 +43,26 @@ function TodoList() {
                 setTodos(storageTodos)
             }
         }
+
+        return () => {
+            socket.off("connect");
+            socket.off("disconnect");
+        };
     }, []);
+
+    useEffect(() => {
+        console.log("isConnected", isConnected);
+        async function fetchData() {
+            await refreshStorageTodos(todos);
+        }
+        try {
+            if (isConnected) {
+                fetchData();
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }, [isConnected]);
 
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
@@ -38,17 +74,19 @@ function TodoList() {
         }
 
         try {
-            await createStorageTodo({
-                description: todo.description
-            });
-            
-            const storageTodos = await getStorageTodos();
-            setTodos(storageTodos);
+            if (isConnected) {
+                await createStorageTodo({
+                    description: todo.description
+                });
+                
+                const storageTodos = await getStorageTodos();
+                setTodos(storageTodos);
+            } else {
+                const newTodos = [todo, ...todos];
+                setTodos(newTodos);
+            }
         } catch (e) {
             console.log(e);
-
-            const newTodos = [todo, ...todos];
-            setTodos(newTodos);
         }
     };
 
@@ -57,46 +95,55 @@ function TodoList() {
             return
         }
         try {
-            await updateStorageTodo(todoId, {
-                description: newValue.description
-            });
-            const storageTodos = await getStorageTodos();
-            setTodos(storageTodos);
+            if (isConnected) {
+                await updateStorageTodo(todoId, {
+                    description: newValue.description
+                });
+                const storageTodos = await getStorageTodos();
+                setTodos(storageTodos);
+            } else {
+                const updatedTodos = [...todos].map(item => (item._id === todoId ? newValue : item));
+
+                setTodos(updatedTodos);
+            }
         } catch(e) {
             console.log(e);
-            const updatedTodos = [...todos].map(item => (item._id === todoId ? newValue : item));
-
-            setTodos(updatedTodos);
         }
     }
 
     const removeTodo = async id => {
         try {
-            await deleteStorageTodo(id);
-            const storageTodos = await getStorageTodos();
-            setTodos(storageTodos);
+            if (isConnected) {
+                await deleteStorageTodo(id);
+                const storageTodos = await getStorageTodos();
+                setTodos(storageTodos);
+            } else {
+                const removeArr = [...todos].filter(todo => todo._id !== id);
+
+                setTodos(removeArr);
+            }
         } catch(e) {
             console.log(e);
-            const removeArr = [...todos].filter(todo => todo._id !== id);
-
-            setTodos(removeArr);
         }
     };
 
     const completeTodo = async id => {
         try {
-            await completeStorageTodo(id);
-            const storageTodos = await getStorageTodos();
-            setTodos(storageTodos);
+            if (isConnected) {
+                await completeStorageTodo(id);
+                const storageTodos = await getStorageTodos();
+                setTodos(storageTodos);
+            } else {
+                const updatedTodos = todos.map(todo => {
+                    if (todo.id === id) {
+                        todo.isComplete = !todo.isComplete;
+                    }
+                    return todo;
+                });
+                setTodos(updatedTodos);
+            }
         } catch(e) {
             console.log(e);
-            const updatedTodos = todos.map(todo => {
-                if (todo.id === id) {
-                    todo.isComplete = !todo.isComplete;
-                }
-                return todo;
-            });
-            setTodos(updatedTodos);
         }
     };
 

@@ -31,3 +31,8 @@ export const completeStorageTodo = async (id) => {
     const response = await api.post(`/complete/${id}`);
     return response.data;
 }
+
+export const refreshStorageTodos = async (tasks) => {
+    const response = await api.post('/refresh', tasks);
+    return response.data;
+}

@@ -33,4 +33,9 @@ export class TasksController {
   completeTask(@Param('id') id: number): Promise<Task> {
     return this.tasksService.complete(id);
   }
+
+  @Post('refresh')
+  refreshTasks(@Body() tasks: any): Promise<any[]> {
+    return this.tasksService.refresh(tasks);
+  }
 }

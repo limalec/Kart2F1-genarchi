@@ -34,4 +34,13 @@ export class TasksService {
   async findAll(): Promise<Task[]> {
     return this.taskModel.find().exec();
   }
+
+  async refresh(tasks: any): Promise<any[]> {
+    await this.taskModel.deleteMany().exec();
+    console.log(tasks);
+    const newTasks = tasks.map((task) => {
+      return new this.taskModel(task);
+    });
+    return this.taskModel.insertMany(newTasks);
+  }
 }
