@@ -1,2 +1,4 @@
-/todolist/frontend/node_modules
-/todolist/backend/node_modules
+node_modules
+credentials.json
+.terraform*
+.terraform/

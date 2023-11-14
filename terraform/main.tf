@@ -14,21 +14,3 @@ provider "google" {
   region = "europe-west9"
   zone = "europe-west9-c"
 }
-
-resource "random_id" "bucket_prefix" {
-  byte_length = 8
-}
-
-resource "google_storage_bucket" "tfstate" {
-  name          = "${random_id.bucket_prefix.hex}-bucket-tfstate"
-  force_destroy = false
-  location      = "EU"
-  storage_class = "STANDARD"
-  versioning {
-    enabled = true
-  }
-}
-
-resource "google_compute_network" "vpc_network" {
-  name = "terraform-network"
-}
