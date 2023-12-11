@@ -18,18 +18,19 @@ export INTERNAL_IP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | gr
 
 service mongod stop
 sleep 10
+echo "mongod stopped"
 chown -R mongodb:mongodb /var/lib/mongodb /var/log/mongodb /tmp/mongodb-*.sock
 sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf
 # Its on 2 lines, It's normal, I need the newline
 sed -i 's/#replication:/replication:\
-  replSetName: "rs1"/' /etc/mongod.conf
-echo "mongod stopped"
+  replSetName: "rs0"/' /etc/mongod.conf
+
 
 export INTERNAL_IP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 gcloud compute instance-groups list-instances ${cluster_name} --region europe-west9 > instances.txt && sed -i '1d' instances.txt && cat instances.txt
 service mongod start
 sleep 10
-echo "mongod up"
+echo "mongod started"
 
 count=$(wc -l < instances.txt)
 seconds=$(($count*5+20))

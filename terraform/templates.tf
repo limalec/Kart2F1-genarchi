@@ -41,9 +41,10 @@ resource "google_compute_region_instance_template" "todolist-front-template" {
 resource "google_compute_region_instance_template" "todolist-back-template" {
   name_prefix = "todolist-back-p2"
   description = "Template for the instance group of the back in platform 2"
-  machine_type = "e2-micro"
+  machine_type = "e2-small"
   tags = ["platform2"]
   can_ip_forward = false
+  depends_on = [ data.google_compute_region_instance_group.dbs-ig ]
 
   disk {
     disk_type = "pd-ssd"
@@ -66,7 +67,9 @@ resource "google_compute_region_instance_template" "todolist-back-template" {
     }
   }
 
-  metadata_startup_script = "echo 'test' > /test.txt"
+  metadata = {
+    startup-script = "${data.template_file.startup_script_backend.rendered}"
+  }
 
   lifecycle {
     create_before_destroy = true
