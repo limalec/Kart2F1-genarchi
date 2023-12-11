@@ -8,4 +8,4 @@ cd Kart2F1-genarchi/todolist/frontend || exit 1
 npm ci
 export API_URL=${back-ip}
 npm run build
-npm run start &
+npx serve -s build &

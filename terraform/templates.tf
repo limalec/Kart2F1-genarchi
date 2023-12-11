@@ -1,7 +1,7 @@
 resource "google_compute_region_instance_template" "todolist-front-template" {
   name_prefix = "todolist-front-p2"
   description = "Template for the instance group of the front in platform 2"
-  machine_type = "e2-micro"
+  machine_type = "e2-small"
   tags = ["platform2"]
   can_ip_forward = false
 
@@ -31,7 +31,9 @@ resource "google_compute_region_instance_template" "todolist-front-template" {
     scopes = [ "cloud-platform" ]
   }
 
-  metadata_startup_script = "echo toto > test.txt"
+  metadata = {
+    startup-script = "${data.template_file.startup_script_frontend.rendered}"
+  }
 
   lifecycle {
     create_before_destroy = true
@@ -79,7 +81,7 @@ resource "google_compute_region_instance_template" "todolist-back-template" {
 resource "google_compute_region_instance_template" "todolist-database-template" {
   name_prefix = "todolist-db-p2"
   description = "Template for the instance group of the DB in platform 2"
-  machine_type = "e2-micro"
+  machine_type = "e2-small"
   tags = [ "platform2" ]
   #can_ip_forward = false
 
