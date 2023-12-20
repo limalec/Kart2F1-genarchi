@@ -1,7 +1,7 @@
 resource "google_compute_region_instance_template" "todolist-front-template" {
   name_prefix = "todolist-front-p2"
   description = "Template for the instance group of the front in platform 2"
-  machine_type = "e2-small"
+  machine_type = "e2-highcpu-4"
   tags = ["http-server","https-server","platform2"]
   can_ip_forward = false
 
@@ -43,7 +43,7 @@ resource "google_compute_region_instance_template" "todolist-front-template" {
 resource "google_compute_region_instance_template" "todolist-back-template" {
   name_prefix = "todolist-back-p2"
   description = "Template for the instance group of the back in platform 2"
-  machine_type = "e2-small"
+  machine_type = "e2-highcpu-4"
   tags = ["platform2"]
   can_ip_forward = false
   depends_on = [ data.google_compute_region_instance_group.dbs-ig ]
@@ -81,7 +81,7 @@ resource "google_compute_region_instance_template" "todolist-back-template" {
 resource "google_compute_region_instance_template" "todolist-database-template" {
   name_prefix = "todolist-db-p2"
   description = "Template for the instance group of the DB in platform 2"
-  machine_type = "e2-small"
+  machine_type = "e2-highcpu-4"
   tags = [ "platform2" ]
   #can_ip_forward = false
 
