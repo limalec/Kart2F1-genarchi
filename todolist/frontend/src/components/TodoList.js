@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import TodoForm from './TodoForm';
 import Todo from './Todo';
+import env from 'react-dotenv';
 import { completeStorageTodo, createStorageTodo, deleteStorageTodo, getStorageTodos, refreshStorageTodos, updateStorageTodo } from '../api';
 
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://"+ env.API_URL + ":3000");
 
 function TodoList() {
     const [isConnected, setIsConnected] = useState(socket.connected);

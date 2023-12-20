@@ -2,7 +2,7 @@ resource "google_compute_region_instance_template" "todolist-front-template" {
   name_prefix = "todolist-front-p2"
   description = "Template for the instance group of the front in platform 2"
   machine_type = "e2-small"
-  tags = ["platform2"]
+  tags = ["http-server","https-server","platform2"]
   can_ip_forward = false
 
   disk {

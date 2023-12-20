@@ -34,7 +34,7 @@ resource "google_compute_region_health_check" "back-health-checks" {
   unhealthy_threshold = 10
 
   tcp_health_check {
-    port = 80
+    port = 3000
     proxy_header = "NONE"
   }
 }
