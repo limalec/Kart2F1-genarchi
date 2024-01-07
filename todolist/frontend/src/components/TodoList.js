@@ -6,7 +6,7 @@ import { completeStorageTodo, createStorageTodo, deleteStorageTodo, getStorageTo
 
 import { io } from "socket.io-client";
 
-const socket = io("http://"+ env.API_URL + ":3000");
+const socket = io("http://"+ env.API_URL);
 
 function TodoList() {
     const [isConnected, setIsConnected] = useState(socket.connected);
