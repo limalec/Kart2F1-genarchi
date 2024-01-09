@@ -37,10 +37,9 @@ export class TasksService {
 
   async refresh(tasks: any): Promise<any[]> {
     await this.taskModel.deleteMany().exec();
-    console.log(tasks);
-    const newTasks = tasks.map((task) => {
-      return new this.taskModel(task);
+    const newTasks = tasks.map(async (task) => {
+      return await this.create(task.description);
     });
-    return this.taskModel.insertMany(newTasks);
+    return await Promise.all(newTasks);
   }
 }

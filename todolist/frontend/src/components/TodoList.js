@@ -23,7 +23,6 @@ function TodoList() {
             setIsConnected(false);
         });
 
-
         async function fetchData() {
             const storageTodos = await getStorageTodos();
             console.log(storageTodos)
@@ -36,13 +35,14 @@ function TodoList() {
             if (isConnected){
                 fetchData();
             }
-        } catch (e) {
-            console.log(e);
-            const storageTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-
-            if (storageTodos) {
-                setTodos(storageTodos)
+            else {
+                const storageTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+                if (storageTodos) {
+                    setTodos(storageTodos)
+                }
             }
+        } catch (e) {
+            console.log(e); 
         }
 
         return () => {
@@ -54,9 +54,10 @@ function TodoList() {
     useEffect(() => {
         console.log("isConnected", isConnected);
         async function fetchData() {
-            await refreshStorageTodos(todos);
+            setTodos(await refreshStorageTodos(todos));
         }
         try {
+            // console.log("todos ", todos);
             if (isConnected) {
                 fetchData();
             }
